@@ -68,7 +68,7 @@ def main(stdscr):
         stdscr.clear()
 
         #teclas
-        key, timeout = timedKey(allowCharacters='qkm', timeout=0.1, toprint=False)
+        key, timeout = timedKey(allowCharacters='qkm', timeout=0.03, toprint=False)
         if key == 'q':
             requests.post(f'{url}/setpts/{party}/0,0', data={})
             print(exit())
@@ -77,6 +77,9 @@ def main(stdscr):
             if (key == 'k' and actual_rows2[0]) > 0 or (key == 'm' and actual_rows2[1] < rows-1):
                 actual_rows2 = [ actual_rows2[0] + movimientos_area[key], actual_rows2[1] + movimientos_area[key]]
                 requests.post(f'{url}/setg/{party}/{actual_rows2[1]}/', data={})
+            time.sleep(0.055)
+        else:
+            time.sleep(0.03)
 
         if 10 in response[3]:
             if response[3] == 10: print(f'\n Ganaste! jugador 1 \n')

@@ -71,7 +71,7 @@ def main(stdscr):
         stdscr.clear()
 
         #teclas
-        key, timeout = timedKey(allowCharacters='wdq', timeout=0.1, toprint=False)
+        key, timeout = timedKey(allowCharacters='wdq', timeout=0.03, toprint=False)
         if key == 'q':
             requests.post(f'{url}/setpts/{party}/0,0', data={})
             print(exit())
@@ -85,8 +85,11 @@ def main(stdscr):
         posibilidades = posibilidades_(actual)
 
         if not timeout:
-            if (key == 'w' and actual_rows1[0]) > 0 or (key == 'd' and actual_rows1[1] < rows-1):
+            if (key == 'w' and actual_rows1[0] > 0) or (key == 'd' and actual_rows1[1] < rows-1):
                 actual_rows1 = [ actual_rows1[0] + movimientos_area[key], actual_rows1[1] + movimientos_area[key]]
+            time.sleep(0.055)
+        else:
+            time.sleep(0.03)
 
         if 10 in puntos:
             if puntos[0] == 10: print(f'\n Ganaste! jugador 1 \n')
