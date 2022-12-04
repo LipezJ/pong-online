@@ -54,6 +54,8 @@ movimientos_ = {
 movimientos__ = {0: 2, 1: 3, 2: 0, 3: 1}
 movimientos_area = {'k': -1, 'm': 1}
 
+url = input("url: ")
+if len(url) < 0: url = "http://localhost:3000"
 party = input('igrese el nombre de la party: ')
 os.system(f'mode con: cols={tablero[1]+3} lines={tablero[0]+4}')
 
@@ -68,22 +70,22 @@ def main(stdscr):
         #teclas
         key, timeout = timedKey(allowCharacters='qkm', timeout=0.1, toprint=False)
         if key == 'q':
-            requests.post(f'http://localhost:3000/setpts/{party}/0,0', data={})
+            requests.post(f'{url}/setpts/{party}/0,0', data={})
             print(exit())
 
         if not timeout:
             if (key == 'k' and actual_rows2[0]) > 0 or (key == 'm' and actual_rows2[1] < rows-1):
                 actual_rows2 = [ actual_rows2[0] + movimientos_area[key], actual_rows2[1] + movimientos_area[key]]
-                requests.post(f'http://localhost:3000/setg/{party}/{actual_rows2[1]}/', data={})
+                requests.post(f'{url}/setg/{party}/{actual_rows2[1]}/', data={})
 
         if 10 in response[3]:
             if response[3] == 10: print(f'\n Ganaste! jugador 1 \n')
             else: print(f'\n Ganaste! jugador 2 \n')
             time.sleep(1)
-            requests.post(f'http://localhost:3000/setpts/{party}/0,0', data={})
+            requests.post(f'{url}/setpts/{party}/0,0', data={})
             print(exit())
 
-        response = requests.get(f'http://localhost:3000/get/{party}', data={}).json()
+        response = requests.get(f'{url}/get/{party}', data={}).json()
         imprimir_tablero(stdscr, response[1], [response[0], response[0]+1], actual_rows2, response[3])
         stdscr.refresh()
 
