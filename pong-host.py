@@ -55,7 +55,7 @@ movimientos__ = {0: 2, 1: 3, 2: 0, 3: 1}
 movimientos_area = {'w': -1, 'd': 1}
 
 url = input("url: ")
-if len(url) < 0: url = "http://localhost:3000"
+if len(url) < 10: url = "http://localhost:3000"
 party = input('igrese el nombre de la party: ')
 os.system(f'mode con: cols={tablero[1]+3} lines={tablero[0]+4}')
 
@@ -73,7 +73,7 @@ def main(stdscr):
         #teclas
         key, timeout = timedKey(allowCharacters='wdq', timeout=0.1, toprint=False)
         if key == 'q':
-            requests.post(f'http://localhost:3000/setpts/{party}/0,0', data={})
+            requests.post(f'{url}/setpts/{party}/0,0', data={})
             print(exit())
 
         anterior = actual
@@ -92,7 +92,7 @@ def main(stdscr):
             if puntos[0] == 10: print(f'\n Ganaste! jugador 1 \n')
             else: print(f'\n Ganaste! jugador 2 \n')
             time.sleep(1)
-            requests.post(f'http://localhost:3000/setpts/{party}/0,0', data={})
+            requests.post(f'{url}/setpts/{party}/0,0', data={})
             print(exit())
             
         #primer movimiento
@@ -132,17 +132,17 @@ def main(stdscr):
                 elif actual_rows1[1] == actual[0]:
                     tipo = 3
             if posibilidades == [0, 3]:
-                if actual_rows2[0] == actual[0]:
+                if actual_rows2[1] == actual[0]:
                     tipo = 1
-                elif actual_rows2[1] == actual[0]:
+                elif actual_rows2[0] == actual[0]:
                     tipo = 2
             posibilidades.remove(movimientos__[tipo])
             nuevo = [actual[0] + movimientos[posibilidades[0]][0], actual[1] + movimientos[posibilidades[0]][1]]
         
-        requests.post(f'http://localhost:3000/setht/{party}/{actual[0]},{actual[1]}/', data={})
-        requests.post(f'http://localhost:3000/sethr/{party}/{actual_rows1[0]}/', data={})
-        requests.post(f'http://localhost:3000/setpts/{party}/{puntos[0]},{puntos[1]}', data={})
-        response = requests.get(f'http://localhost:3000/get/{party}', data={}).json()
+        requests.post(f'{url}/setht/{party}/{actual[0]},{actual[1]}/', data={})
+        requests.post(f'{url}/sethr/{party}/{actual_rows1[0]}/', data={})
+        requests.post(f'{url}/setpts/{party}/{puntos[0]},{puntos[1]}', data={})
+        response = requests.get(f'{url}/get/{party}', data={}).json()
         actual_rows2 = [response[2], response[2]-1]
 
         imprimir_tablero(stdscr, nuevo, actual_rows1, actual_rows2, puntos)

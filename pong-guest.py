@@ -55,7 +55,7 @@ movimientos__ = {0: 2, 1: 3, 2: 0, 3: 1}
 movimientos_area = {'k': -1, 'm': 1}
 
 url = input("url: ")
-if len(url) < 0: url = "http://localhost:3000"
+if len(url) < 10: url = "http://localhost:3000"
 party = input('igrese el nombre de la party: ')
 os.system(f'mode con: cols={tablero[1]+3} lines={tablero[0]+4}')
 
