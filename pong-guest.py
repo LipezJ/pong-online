@@ -16,7 +16,7 @@ def imprimir():
     print()
     for i in range(len(area2)):
         response = requests.get(f'http://localhost:3000/get/{party}', data={}).json()
-        if i == response[0] or i-1 == response[0]:
+        if i == response[0] or i+1 == response[0]:
             print('|', end='')
         else:
             print(' ', end='')
