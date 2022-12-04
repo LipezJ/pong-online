@@ -14,9 +14,9 @@ def imprimir_tablero(stdscr, nuevo, actual_rows1, actual_rows2,puntos):
         else:
             stdscr.addstr(' ')
         if nuevo[0] == row:
-            stdscr.addstr((' '*(nuevo[1]-1)) + 'O' + ' '*(tablero[1]-(nuevo[1]+1)))
+            stdscr.addstr((' '*(nuevo[1])) + 'O' + ' '*(tablero[1]-(nuevo[1]+1)))
         else:
-            stdscr.addstr(' '*(tablero[1]-1))
+            stdscr.addstr(' '*(tablero[1]))
         if row == actual_rows2[0] or row == actual_rows2[1]:
             stdscr.addstr('|')
         else:
@@ -60,7 +60,7 @@ os.system(f'mode con: cols={tablero[1]+3} lines={tablero[0]+4}')
 def main(stdscr):
 
     actual_rows2 = [rows//2, rows//2+1]
-    puntos = [0, 0]
+    response = [0,[0,0],0,[0,0]]
 
     while True:
         stdscr.clear()
@@ -68,6 +68,7 @@ def main(stdscr):
         #teclas
         key, timeout = timedKey(allowCharacters='qkm', timeout=0.1, toprint=False)
         if key == 'q':
+            requests.post(f'http://localhost:3000/setpts/{party}/0,0', data={})
             print(exit())
 
         if not timeout:
@@ -75,14 +76,15 @@ def main(stdscr):
                 actual_rows2 = [ actual_rows2[0] + movimientos_area[key], actual_rows2[1] + movimientos_area[key]]
                 requests.post(f'http://localhost:3000/setg/{party}/{actual_rows2[1]}/', data={})
 
-        if 10 in puntos:
-            if puntos[0] == 10: print(f'\n Ganaste! jugador 1 \n')
+        if 10 in response[3]:
+            if response[3] == 10: print(f'\n Ganaste! jugador 1 \n')
             else: print(f'\n Ganaste! jugador 2 \n')
             time.sleep(1)
+            requests.post(f'http://localhost:3000/setpts/{party}/0,0', data={})
             print(exit())
 
         response = requests.get(f'http://localhost:3000/get/{party}', data={}).json()
-        imprimir_tablero(stdscr, response[1], [response[0], response[0]+1], actual_rows2, puntos)
+        imprimir_tablero(stdscr, response[1], [response[0], response[0]+1], actual_rows2, response[3])
         stdscr.refresh()
 
 wrapper(main)

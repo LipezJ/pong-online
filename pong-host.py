@@ -71,6 +71,7 @@ def main(stdscr):
         #teclas
         key, timeout = timedKey(allowCharacters='wdq', timeout=0.1, toprint=False)
         if key == 'q':
+            requests.post(f'http://localhost:3000/setpts/{party}/0,0', data={})
             print(exit())
 
         anterior = actual
@@ -89,6 +90,7 @@ def main(stdscr):
             if puntos[0] == 10: print(f'\n Ganaste! jugador 1 \n')
             else: print(f'\n Ganaste! jugador 2 \n')
             time.sleep(1)
+            requests.post(f'http://localhost:3000/setpts/{party}/0,0', data={})
             print(exit())
             
         #primer movimiento
@@ -137,6 +139,7 @@ def main(stdscr):
         
         requests.post(f'http://localhost:3000/setht/{party}/{actual[0]},{actual[1]}/', data={})
         requests.post(f'http://localhost:3000/sethr/{party}/{actual_rows1[0]}/', data={})
+        requests.post(f'http://localhost:3000/setpts/{party}/{puntos[0]},{puntos[1]}', data={})
         response = requests.get(f'http://localhost:3000/get/{party}', data={}).json()
         actual_rows2 = [response[2], response[2]-1]
 
