@@ -1,4 +1,4 @@
-# Pong online
+# pong_online
 
 Multiplayer pong using an API made with node js. The API is located at https://github.com/LipezJ/ApiPong.
 
