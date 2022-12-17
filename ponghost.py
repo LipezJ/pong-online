@@ -2,9 +2,9 @@ import random as rn
 import os
 import time
 import curses
-import requests
 from curses import wrapper
 from pytimedinput import timedKey
+import socketio
 
 def imprimir_tablero(stdscr, nuevo, actual_rows1, actual_rows2,puntos):
     stdscr.addstr('x'*(tablero[1]+1) + f'\n')
@@ -56,6 +56,16 @@ movimientos_area = {'w': -1, 'd': 1}
 
 url = input("url: ")
 if len(url) < 10: url = "http://localhost:3000"
+
+response = [0,[0,0],0,[0,0]]
+sio = socketio.Client()
+sio.connect(url)
+
+@sio.on('cget')
+def cget(data):
+    global response
+    response = data
+
 party = input('igrese el nombre de la party: ')
 os.system(f'mode con: cols={tablero[1]+3} lines={tablero[0]+4}')
 
@@ -69,12 +79,11 @@ def main(stdscr):
 
     while True:
         stdscr.clear()
-
         #teclas
         key, timeout = timedKey(allowCharacters='wdq', timeout=0.03, toprint=False)
         if key == 'q':
-            requests.post(f'{url}/setpts/{party}/0,0', data={})
-            print(exit())
+            sio.disconnect()
+            return 0
 
         anterior = actual
         actual = nuevo
@@ -95,8 +104,7 @@ def main(stdscr):
             if puntos[0] == 10: print(f'\n Ganaste! jugador 1 \n')
             else: print(f'\n Ganaste! jugador 2 \n')
             time.sleep(1)
-            requests.post(f'{url}/setpts/{party}/0,0', data={})
-            print(exit())
+            return 0
             
         #primer movimiento
         if actual == anterior:
@@ -142,13 +150,13 @@ def main(stdscr):
             posibilidades.remove(movimientos__[tipo])
             nuevo = [actual[0] + movimientos[posibilidades[0]][0], actual[1] + movimientos[posibilidades[0]][1]]
         
-        requests.post(f'{url}/setht/{party}/{actual[0]},{actual[1]}/', data={})
-        requests.post(f'{url}/sethr/{party}/{actual_rows1[0]}/', data={})
-        requests.post(f'{url}/setpts/{party}/{puntos[0]},{puntos[1]}', data={})
-        response = requests.get(f'{url}/get/{party}', data={}).json()
+        sio.emit('seth', {"name": party, "posr": actual_rows1[0], "pos": actual, "points": puntos})
+        sio.emit('get', {"name": party})
+
         actual_rows2 = [response[2], response[2]-1]
 
         imprimir_tablero(stdscr, nuevo, actual_rows1, actual_rows2, puntos)
         stdscr.refresh()
 
 wrapper(main)
+sio.disconnect()
