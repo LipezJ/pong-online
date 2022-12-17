@@ -5,8 +5,8 @@ Pong multiplayer on the terminal using an API made with node js. The API is loca
 ### libraries to install
 * **For terminal handling**.
   > _pip install curses_
-* **For API requests**.
-  > _pip install request_
+* **For the API**.
+  > _pip install socketio_
 * **To listen to the movement keys**.
   > _pip install pytimedinput_
   > > For this library I make some changes so that it does not print the value of the keys when they are pressed, although it is optional I recommend it for aesthetics.
